@@ -1,4 +1,4 @@
-import { Plant, PlantStage, SeedType } from './types';
+import { Plant, SeedType } from './types';
 import { SEEDS } from './marketData';
 
 const STAGE_DURATIONS: Record<SeedType, { seed: number; growing: number }> = {
@@ -32,14 +32,9 @@ export function createPlant(seedType: SeedType = 'regular'): Plant {
   };
 }
 
-export function updatePlant(plant: Plant, upgrades: any[] = []): Plant {
+export function updatePlant(plant: Plant): Plant {
   // Growth progression
-  let growthSpeed = 15 * plant.growthRate; // Speed based on seed type
-  upgrades.forEach(upgrade => {
-    if (upgrade.effect.type === 'growth_speed') {
-      growthSpeed *= (1 + upgrade.effect.value);
-    }
-  });
+  const growthSpeed = 15 * plant.growthRate; // Speed based on seed type
 
   if (plant.stage === 'ready') {
     return plant;
@@ -49,33 +44,31 @@ export function updatePlant(plant: Plant, upgrades: any[] = []): Plant {
   const growthIncrease = (100 / stageDuration) * growthSpeed;
   const newProgress = Math.min(100, plant.progress + growthIncrease);
 
-  // Stage control
-  let newStage: PlantStage = plant.stage;
-  if (newProgress >= 100) {
+  // Stage transitions
+  if (newProgress === 100) {
     if (plant.stage === 'seed') {
-      newStage = 'growing';
-    } else if (plant.stage === 'growing') {
-      newStage = 'ready';
+      return { ...plant, stage: 'growing', progress: 0 };
+    }
+    if (plant.stage === 'growing') {
+      return { ...plant, stage: 'ready', progress: 100 };
     }
   }
 
-  return {
-    ...plant,
-    stage: newStage,
-    progress: newStage === plant.stage ? newProgress : 0,
-  };
+  return { ...plant, progress: newProgress };
 }
 
 export function waterPlant(plant: Plant): Plant {
+  if (plant.stage === 'seed' || plant.stage === 'growing') {
+    return { ...plant, progress: Math.min(100, plant.progress + 10) };
+  }
   return plant;
 }
 
 export function harvestPlant(plant: Plant): number {
   if (plant.stage !== 'ready') return 0;
-  
-  // Calculate value based on quality and seed type
-  const baseValue = SEEDS[plant.seedType].price * 3; // 3x the seed price
-  const qualityMultiplier = plant.quality / 100;
-  
-  return Math.floor(baseValue * qualityMultiplier);
+
+  const baseValue = plant.quality * 10;
+  const qualityBonus = plant.quality >= 90 ? 2 : plant.quality >= 75 ? 1.5 : 1;
+
+  return Math.round(baseValue * qualityBonus);
 }

@@ -21,7 +21,7 @@ export default function MusicPlayer() {
         });
       }
     }
-  }, []);
+  }, [volume]);
 
   const togglePlay = () => {
     if (audioRef.current) {

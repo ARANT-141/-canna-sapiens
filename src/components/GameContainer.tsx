@@ -1,21 +1,19 @@
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import React, { useState, useEffect } from 'react';
+import Market from './Market';
 import { Plant, SeedType } from '@/game/types';
 import { createPlant, updatePlant, waterPlant, harvestPlant } from '@/game/plantManager';
 import { SEEDS } from '@/game/marketData';
 import PlantAnimation from './PlantAnimation';
-import Market from './Market';
 import SmokeEffect from './SmokeEffect';
 import MusicPlayer from './MusicPlayer';
 
 export default function GameContainer() {
   const [money, setMoney] = useState(350);
   const [plants, setPlants] = useState<Plant[]>([]);
-  const [upgrades, setUpgrades] = useState<any[]>([]);
+  const [upgrades] = useState<string[]>([]);
   const [harvestedPlants, setHarvestedPlants] = useState<string[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
 
-  // Update plants
   useEffect(() => {
     const timer = setInterval(() => {
       setPlants(currentPlants =>
@@ -35,7 +33,7 @@ export default function GameContainer() {
         alert("You must harvest all plants before planting Canna Sapiens!");
         return;
       }
-      
+
       // Check if trying to plant other seeds while Canna Sapiens is growing
       if (plants.some(p => p.seedType === 'cannaSapiens') && type !== 'cannaSapiens') {
         alert("You cannot plant other seeds while Canna Sapiens is growing!");
@@ -43,14 +41,7 @@ export default function GameContainer() {
       }
 
       setMoney(money - seed.price);
-      const newPlant: Plant = {
-        id: Math.random().toString(),
-        stage: 'seed',
-        quality: seed.baseQuality,
-        growthRate: seed.growthMultiplier,
-        progress: 0,
-        seedType: type,
-      };
+      const newPlant = createPlant(type);
       setPlants([...plants, newPlant]);
     }
   };
@@ -64,7 +55,6 @@ export default function GameContainer() {
     );
   };
 
-  // Harvest plant
   const handleHarvest = (plantId: string) => {
     const plant = plants.find(p => p.id === plantId);
     if (plant && plant.stage === 'ready') {
@@ -134,6 +124,13 @@ export default function GameContainer() {
                       <div className="text-purple-400 text-lg mb-2">{plant.stage}</div>
                       <PlantAnimation 
                         stage={isHarvested ? 'harvested' : plant.stage}
+                        onClick={() => {
+                          if (plant.stage === 'ready') {
+                            handleHarvest(plant.id);
+                          } else if (plant.stage !== 'harvested') {
+                            handleWater(plant.id);
+                          }
+                        }}
                       />
                       <div className="w-full bg-gray-700 rounded-full h-2 mb-2">
                         <div 
@@ -142,12 +139,14 @@ export default function GameContainer() {
                         />
                       </div>
                       <div className="flex gap-2">
-                        <button
-                          onClick={() => handleWater(plant.id)}
-                          className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-lg text-sm"
-                        >
-                          💧
-                        </button>
+                        {plant.stage !== 'ready' && plant.stage !== 'harvested' && (
+                          <button
+                            onClick={() => handleWater(plant.id)}
+                            className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-lg text-sm"
+                          >
+                            💧
+                          </button>
+                        )}
                         {plant.stage === 'ready' && !isHarvested && (
                           <button
                             onClick={() => handleHarvest(plant.id)}
@@ -169,12 +168,16 @@ export default function GameContainer() {
         </div>
       </div>
 
+      <div className="text-center mt-4">
+        <p className="text-xl font-semibold">Don&apos;t worry, its just a game!</p>
+      </div>
+
       {/* Share Modal */}
       {showShareModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-purple-900/90 p-8 rounded-xl text-center">
             <h3 className="text-3xl font-bold text-purple-300 mb-4">🎉 Legendary Harvest!</h3>
-            <p className="text-xl text-gray-200 mb-6">You've successfully harvested a Canna Sapiens!</p>
+            <p className="text-xl text-gray-200 mb-6">You&apos;ve successfully harvested a Canna Sapiens!</p>
             <button
               onClick={handleShare}
               className="bg-[#1DA1F2] hover:bg-[#1a8cd8] text-white px-6 py-3 rounded-xl font-medium flex items-center gap-2 mx-auto"

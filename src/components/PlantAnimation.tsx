@@ -11,10 +11,10 @@ const STAGE_IMAGES = {
 
 interface PlantAnimationProps {
   stage: PlantStage | 'harvested';
-  onHarvestAnimationComplete?: () => void;
+  onClick?: () => void;
 }
 
-export default function PlantAnimation({ stage, onHarvestAnimationComplete }: PlantAnimationProps) {
+export default function PlantAnimation({ stage, onClick }: PlantAnimationProps) {
   const [showHarvestEffect, setShowHarvestEffect] = useState(false);
 
   useEffect(() => {
@@ -22,11 +22,10 @@ export default function PlantAnimation({ stage, onHarvestAnimationComplete }: Pl
       setShowHarvestEffect(true);
       const timer = setTimeout(() => {
         setShowHarvestEffect(false);
-        onHarvestAnimationComplete?.();
-      }, 2500); // Biraz daha uzun süre
+      }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [stage, onHarvestAnimationComplete]);
+  }, [stage]);
 
   // Aşamalara göre boyut ayarlama
   const getPlantSize = () => {
@@ -45,7 +44,10 @@ export default function PlantAnimation({ stage, onHarvestAnimationComplete }: Pl
 
   // Tüm aşamalar için GIF görüntüleme
   return (
-    <div className={`relative flex items-center justify-center ${getPlantSize()}`}>
+    <div 
+      className={`relative flex items-center justify-center ${getPlantSize()} cursor-pointer transform hover:scale-110 transition-transform`}
+      onClick={onClick}
+    >
       <Image
         src={STAGE_IMAGES[stage]}
         alt={`Plant ${stage}`}
@@ -55,6 +57,11 @@ export default function PlantAnimation({ stage, onHarvestAnimationComplete }: Pl
           showHarvestEffect ? 'scale-125 opacity-90' : ''
         }`}
       />
+      {showHarvestEffect && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-4xl">✨</span>
+        </div>
+      )}
     </div>
   );
 }
