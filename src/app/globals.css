@@ -1,0 +1,204 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes ambientSmoke {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(-40px, 40px) rotate(120deg);
+  }
+  66% {
+    transform: translate(40px, -40px) rotate(240deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg);
+  }
+}
+
+@keyframes psychedelic {
+  0% {
+    filter: hue-rotate(0deg) saturate(200%);
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    filter: hue-rotate(90deg) saturate(300%);
+    transform: scale(1.03) rotate(2deg);
+  }
+  50% {
+    filter: hue-rotate(180deg) saturate(400%);
+    transform: scale(1) rotate(-1deg);
+  }
+  75% {
+    filter: hue-rotate(270deg) saturate(300%);
+    transform: scale(0.97) rotate(-2deg);
+  }
+  100% {
+    filter: hue-rotate(360deg) saturate(200%);
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes textDistort {
+  0% {
+    filter: blur(0px);
+    transform: skew(0deg) scale(1);
+    text-shadow: 2px 2px 10px rgba(255,0,255,0.5);
+  }
+  25% {
+    filter: blur(2px);
+    transform: skew(-5deg) scale(1.2);
+    text-shadow: -4px 2px 15px rgba(0,255,255,0.7);
+  }
+  50% {
+    filter: blur(1px);
+    transform: skew(5deg) scale(0.9);
+    text-shadow: 4px -4px 20px rgba(255,255,0,0.6);
+  }
+  75% {
+    filter: blur(3px);
+    transform: skew(-3deg) scale(1.1);
+    text-shadow: -2px -2px 15px rgba(0,255,0,0.8);
+  }
+  100% {
+    filter: blur(0px);
+    transform: skew(0deg) scale(1);
+    text-shadow: 2px 2px 10px rgba(255,0,255,0.5);
+  }
+}
+
+@keyframes textGiant {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+    filter: blur(1px);
+  }
+  50% {
+    transform: scale(5);
+    opacity: 0.1;
+    filter: blur(3px);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+    filter: blur(1px);
+  }
+}
+
+@keyframes scrollThumb {
+  0% {
+    background: linear-gradient(45deg,
+      rgba(255, 0, 255, 0.7),
+      rgba(0, 255, 0, 0.7),
+      rgba(255, 255, 0, 0.7)
+    );
+  }
+  50% {
+    background: linear-gradient(45deg,
+      rgba(255, 255, 0, 0.7),
+      rgba(255, 0, 255, 0.7),
+      rgba(0, 255, 0, 0.7)
+    );
+  }
+  100% {
+    background: linear-gradient(45deg,
+      rgba(255, 0, 255, 0.7),
+      rgba(0, 255, 0, 0.7),
+      rgba(255, 255, 0, 0.7)
+    );
+  }
+}
+
+.psychedelic-bg {
+  animation: psychedelic 20s infinite linear;
+}
+
+.psychedelic-slow {
+  animation: psychedelic 30s infinite linear;
+}
+
+.psychedelic-fast {
+  animation: psychedelic 10s infinite linear;
+}
+
+.text-distort {
+  animation: textDistort 8s infinite linear;
+  position: relative;
+}
+
+.text-giant {
+  animation: textGiant 12s infinite ease-in-out;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  pointer-events: none;
+  z-index: -1;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary: #9333ea;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #171717;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #171717;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #9333ea;
+  --radius: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Scroll bar stilleri */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+::-webkit-scrollbar-track {
+  background: linear-gradient(180deg, #ff00ff, #00ff00, #ff00ff);
+  border-radius: 10px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, 
+    rgba(255, 0, 255, 0.7),
+    rgba(0, 255, 0, 0.7),
+    rgba(255, 255, 0, 0.7)
+  );
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  backdrop-filter: blur(5px);
+  animation: scrollThumb 3s infinite linear;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg,
+    rgba(255, 255, 0, 0.8),
+    rgba(255, 0, 255, 0.8),
+    rgba(0, 255, 0, 0.8)
+  );
+}
