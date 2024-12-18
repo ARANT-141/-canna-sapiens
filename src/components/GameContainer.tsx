@@ -10,7 +10,6 @@ import MusicPlayer from './MusicPlayer';
 export default function GameContainer() {
   const [money, setMoney] = useState(350);
   const [plants, setPlants] = useState<Plant[]>([]);
-  const [upgrades] = useState<string[]>([]);
   const [harvestedPlants, setHarvestedPlants] = useState<string[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
 
