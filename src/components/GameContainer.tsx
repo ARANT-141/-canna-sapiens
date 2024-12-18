@@ -17,12 +17,12 @@ export default function GameContainer() {
   useEffect(() => {
     const timer = setInterval(() => {
       setPlants(currentPlants =>
-        currentPlants.map(plant => updatePlant(plant, upgrades))
+        currentPlants.map(plant => updatePlant(plant))
       );
     }, 10);
 
     return () => clearInterval(timer);
-  }, [upgrades]);
+  }, []);
 
   // Buy new seed
   const handleBuySeed = (type: SeedType) => {
