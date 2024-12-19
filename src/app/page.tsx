@@ -25,6 +25,7 @@ export default function Home() {
               src="/images/homepage.gif"
               alt="Canna Sapiens Mascot"
               fill
+              unoptimized
               style={{ objectFit: 'contain' }}
               className="rounded-xl"
             />
