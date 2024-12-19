@@ -27,34 +27,24 @@ export default function PlantAnimation({ stage, onClick }: PlantAnimationProps) 
     }
   }, [stage]);
 
-  // Aşamalara göre boyut ayarlama
-  const getPlantSize = () => {
-    switch (stage) {
-      case 'seed':
-        return 'w-28 h-28';
-      case 'growing':
-        return 'w-32 h-32';
-      case 'ready':
-      case 'harvested':
-        return 'w-36 h-36';
-      default:
-        return 'w-28 h-28';
-    }
-  };
+  const isHarvestedOrReady = stage === 'harvested' || stage === 'ready';
 
-  // Tüm aşamalar için GIF görüntüleme
   return (
     <div 
-      className={`relative flex items-center justify-center ${getPlantSize()} cursor-pointer transform hover:scale-110 transition-transform`}
+      className={`relative w-24 h-24 cursor-pointer transform hover:scale-110 transition-transform perspective-800 ${
+        isHarvestedOrReady ? 'z-10' : ''
+      }`}
       onClick={onClick}
+      style={{ perspective: '800px' }}
     >
       <Image
         src={STAGE_IMAGES[stage]}
-        alt={`Plant ${stage}`}
-        width={stage === 'harvested' ? 144 : 128}
-        height={stage === 'harvested' ? 144 : 128}
+        alt={`Plant in ${stage} stage`}
+        width={128}
+        height={128}
+        unoptimized
         className={`transition-all duration-500 ${
-          showHarvestEffect ? 'scale-125 opacity-90' : ''
+          isHarvestedOrReady ? 'animate-float' : ''
         }`}
       />
       {showHarvestEffect && (
